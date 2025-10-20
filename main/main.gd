@@ -64,8 +64,10 @@ func handle_temperature(delta):
 		body.update_visual()
 
 func _on_child_entered_tree(node: Node) -> void:
-	thermal_bodies.append(node)
+	if node is Thermal_body:
+		thermal_bodies.append(node)
 
 
 func _on_child_exiting_tree(node: Node) -> void:
-	thermal_bodies.erase(node)
+	if node is Thermal_body:
+		thermal_bodies.erase(node)
