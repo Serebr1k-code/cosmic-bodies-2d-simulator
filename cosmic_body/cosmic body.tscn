@@ -1,19 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://d36d0mpqeicbg"]
+[gd_scene load_steps=5 format=3 uid="uid://d36d0mpqeicbg"]
 
 [ext_resource type="Script" uid="uid://cuti6lej702k7" path="res://cosmic_body/cosmic_body.gd" id="1_hr0ax"]
-[ext_resource type="Texture2D" uid="uid://c7a4vk52mk7e1" path="res://icon.svg" id="1_rmuyw"]
+[ext_resource type="Texture2D" uid="uid://bxdqpenxwoec2" path="res://assets/thegratplanetballnigaball.png" id="2_hr0ax"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hr0ax"]
-size = Vector2(128, 128)
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_hr0ax"]
+bounce = 0.25
 
-[node name="CosmicBody" type="RigidBody2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_tnavn"]
+radius = 64.0
+
+[node name="CosmicBody" type="RigidBody2D" groups=["physics"]]
+physics_material_override = SubResource("PhysicsMaterial_hr0ax")
 gravity_scale = 0.0
 script = ExtResource("1_hr0ax")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_rmuyw")
+texture = ExtResource("2_hr0ax")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_hr0ax")
+shape = SubResource("CircleShape2D_tnavn")
 
 [connection signal="apply_impulse" from="." to="." method="_on_apply_impulse"]

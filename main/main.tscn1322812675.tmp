@@ -8,3 +8,5 @@ script = ExtResource("1_53q0u")
 
 [node name="Camera" type="Camera2D" parent="."]
 script = ExtResource("2_pjrb6")
+
+[node name="Camera2D" type="Camera2D" parent="."]

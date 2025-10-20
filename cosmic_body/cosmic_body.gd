@@ -3,8 +3,8 @@ extends RigidBody2D
 signal apply_impulse(vec)
 
 func _ready() -> void:
-	pass
-
+	$Sprite2D.scale = Vector2.ONE*mass
+	$CollisionShape2D.scale = Vector2.ONE*mass
 
 func _process(delta: float) -> void:
 	pass
