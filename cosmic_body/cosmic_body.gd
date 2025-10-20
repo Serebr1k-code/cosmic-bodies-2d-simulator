@@ -6,6 +6,7 @@ class_name Thermal_body
 signal apply_impulse(vec)
 
 #onready
+@onready var CollisionShape = $CollisionShape2D
 
 #const
 

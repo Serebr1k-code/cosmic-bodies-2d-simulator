@@ -32,7 +32,7 @@ func handle_temperature(delta):
 		energy_received[body] = 0.0
 	# Update temperatures
 	for body in thermal_bodies:
-		var area = PI * body.radius * body.radius
+		var area = PI * (body.CollisionShape.shape.radius**2)
 		
 		# Energy lost to space
 		var energy_lost = STEFAN_BOLTZMANN * body.emissivity * area * pow(body.temperature, 4) * delta
