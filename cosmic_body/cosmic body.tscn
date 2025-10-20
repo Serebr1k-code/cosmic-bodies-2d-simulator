@@ -7,6 +7,7 @@
 size = Vector2(128, 128)
 
 [node name="CosmicBody" type="RigidBody2D"]
+gravity_scale = 0.0
 script = ExtResource("1_hr0ax")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
