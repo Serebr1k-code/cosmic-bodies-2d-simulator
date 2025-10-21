@@ -4,10 +4,10 @@ extends Node2D
 
 #onready
 @onready var cosmic_body = preload("res://cosmic_body/cosmic body.tscn")
-var G = 667
 
 #const
 const STEFAN_BOLTZMANN: float = 5.67e-8
+const G = 1
 
 #vars
 var thermal_bodies: Array[Thermal_body] = []
@@ -15,12 +15,12 @@ var star_bodies: Array[Star_body] = []
 
 func _ready() -> void:
 	var balls = []
-	for i in range(10):
+	for i in range(100):
 		balls.append(cosmic_body.instantiate())
-		balls[i].position = Vector2(randi_range(100, 1200), randi_range(100, 600))
-		balls[i].mass = randf()
+		balls[i].position = Vector2(randi_range(-3000, 3000), randi_range(-3000, 3000))
 		balls[i].temperature = randi_range(50, 1050)
 		add_child(balls[i])
+		balls[i].apply_central_impulse(Vector2(randf(), randf())*randf_range(1, 1000))
 
 func _process(delta: float) -> void:
 	handle_gravity(delta)
@@ -58,7 +58,7 @@ func handle_temperature(delta):
 				continue
 				
 			# Inverse square law for radiation
-			var radiation_power = star.get_radiation_power()
+			var radiation_power = star.luminosity
 			var received_power = radiation_power / (4.0 * PI * distance * distance)
 			
 			# Account for body's albedo (reflection)

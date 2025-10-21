@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://co6h86rthora7"]
+[gd_scene load_steps=9 format=3 uid="uid://co6h86rthora7"]
 
 [ext_resource type="Script" uid="uid://crnyd8ig2y485" path="res://star_body/star_body.gd" id="1_qtygq"]
 [ext_resource type="Texture2D" uid="uid://bxdqpenxwoec2" path="res://assets/thegratplanetballnigaball.png" id="2_8uah3"]
@@ -6,8 +6,20 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_hr0ax"]
 bounce = 0.25
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p42br"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_tnavn"]
 radius = 64.0
+
+[sub_resource type="Gradient" id="Gradient_qtygq"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8uah3"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0wtf6"]
+width = 128
+height = 128
+noise = SubResource("FastNoiseLite_8uah3")
+color_ramp = SubResource("Gradient_qtygq")
 
 [node name="StarBody" type="RigidBody2D" groups=["physics"]]
 physics_material_override = SubResource("PhysicsMaterial_hr0ax")
@@ -15,9 +27,17 @@ gravity_scale = 0.0
 script = ExtResource("1_qtygq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+light_mask = 3
+visibility_layer = 3
+material = SubResource("ShaderMaterial_p42br")
 texture = ExtResource("2_8uah3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_tnavn")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+energy = 10.0
+range_item_cull_mask = 2
+texture = SubResource("NoiseTexture2D_0wtf6")
 
 [connection signal="apply_impulse" from="." to="." method="_on_apply_impulse"]

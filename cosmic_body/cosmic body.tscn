@@ -10,6 +10,7 @@ bounce = 0.25
 radius = 64.0
 
 [node name="CosmicBody" type="RigidBody2D" groups=["physics"]]
+mass = 2000.0
 physics_material_override = SubResource("PhysicsMaterial_hr0ax")
 gravity_scale = 0.0
 script = ExtResource("1_hr0ax")
