@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://co6h86rthora7"]
+
+[ext_resource type="Script" uid="uid://crnyd8ig2y485" path="res://star_body/star_body.gd" id="1_qtygq"]
+[ext_resource type="Texture2D" uid="uid://bxdqpenxwoec2" path="res://assets/thegratplanetballnigaball.png" id="2_8uah3"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_hr0ax"]
+bounce = 0.25
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tnavn"]
+radius = 64.0
+
+[node name="StarBody" type="RigidBody2D" groups=["physics"]]
+physics_material_override = SubResource("PhysicsMaterial_hr0ax")
+gravity_scale = 0.0
+script = ExtResource("1_qtygq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_8uah3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_tnavn")
+
+[connection signal="apply_impulse" from="." to="." method="_on_apply_impulse"]
