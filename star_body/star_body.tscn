@@ -30,13 +30,15 @@ script = ExtResource("1_qtygq")
 light_mask = 3
 visibility_layer = 3
 material = SubResource("ShaderMaterial_p42br")
+scale = Vector2(2, 2)
 texture = ExtResource("2_8uah3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(2, 2)
 shape = SubResource("CircleShape2D_tnavn")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-energy = 10.0
+scale = Vector2(2, 2)
 range_item_cull_mask = 2
 texture = SubResource("NoiseTexture2D_0wtf6")
 

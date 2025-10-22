@@ -15,5 +15,5 @@ func _process(delta: float) -> void:
 		position.y += directiony * SPEED / zoom.y
 	if Input.is_action_just_pressed("scroll_up"):
 		zoom += Vector2.ONE*ZOOMSPEED
-	if Input.is_action_just_pressed("scroll_down"):
+	if Input.is_action_just_pressed("scroll_down") and zoom > Vector2.ONE*ZOOMSPEED:
 		zoom -= Vector2.ONE*ZOOMSPEED

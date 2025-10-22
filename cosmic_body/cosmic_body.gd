@@ -29,17 +29,4 @@ func _on_apply_impulse(vec: Vector2) -> void:
 	apply_central_impulse(vec)
 
 func update_visual():
-	if temperature < 100:
-		$Sprite2D.modulate = Color.DARK_BLUE
-	elif temperature < 200:
-		$Sprite2D.modulate = Color.BLUE
-	elif temperature < 273:
-		$Sprite2D.modulate = Color.CYAN
-	elif temperature < 300:
-		$Sprite2D.modulate = Color.GREEN
-	elif temperature < 500:
-		$Sprite2D.modulate = Color.YELLOW
-	elif temperature < 1000:
-		$Sprite2D.modulate = Color.ORANGE
-	else:
-		$Sprite2D.modulate = Color.RED
+	$Sprite2D.modulate = Color(min(temperature/1000, 1.0), min(temperature/2000, 0.5), max(1-temperature/1000, 0.0))
