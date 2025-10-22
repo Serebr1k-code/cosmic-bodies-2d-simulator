@@ -4,6 +4,12 @@ extends Node2D
 
 #onready
 @onready var cosmic_body = preload("res://cosmic_body/cosmic body.tscn")
+@onready var star_body = preload("res://star_body/star_body.tscn")
+@onready var Mass_label = $CanvasLayer/BodyInfo/VBoxContainer/Mass
+@onready var Radius_label = $CanvasLayer/BodyInfo/VBoxContainer/Radius
+@onready var Temperature_label = $CanvasLayer/BodyInfo/VBoxContainer/Temperature
+@onready var Type_label = $CanvasLayer/BodyInfo/VBoxContainer/Type
+
 
 #const
 const STEFAN_BOLTZMANN: float = 5.67e-8
@@ -12,19 +18,21 @@ const G = 6.6743
 #vars
 var thermal_bodies: Array[Thermal_body] = []
 var star_bodies: Array[Star_body] = []
+var target_body: Thermal_body
 
 func _ready() -> void:
-	var balls = []
-	for i in range(100):
-		balls.append(cosmic_body.instantiate())
-		balls[i].position = Vector2(randi_range(-3000, 3000), randi_range(-3000, 3000))
-		balls[i].temperature = randi_range(50, 1050)
-		add_child(balls[i])
-		#balls[i].apply_central_impulse(Vector2(randf(), randf())*randf_range(1, 1000))
+	pass
 
 func _process(delta: float) -> void:
 	handle_gravity(delta)
 	handle_temperature(delta)
+	handle_ui(delta)
+
+func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed("mouse1"):
+		add_body(1)
+	if Input.is_action_just_pressed("mouse2"):
+		add_body(2)
 
 func handle_gravity(delta):
 	for child in get_children():
@@ -87,6 +95,28 @@ func handle_temperature(delta):
 		
 		body.update_visual()
 
+func handle_ui(delta):
+	$CanvasLayer/BodyInfo.global_position = get_global_mouse_position() + Vector2(1000, 648)
+	$Area2D.global_position = get_global_mouse_position()
+	if target_body:
+		$CanvasLayer/BodyInfo.show()
+		Mass_label.text = "Mass: " + str(target_body.mass)
+		Radius_label.text = "Radius: " + str(target_body.CollisionShape.shape.radius)
+		Temperature_label.text = "Temperature: " + str(target_body.temperature)
+		Type_label.text = "Type: " + str(target_body.get_type())
+	else:
+		$CanvasLayer/BodyInfo.hide()
+
+func add_body(id):
+	if id == 1:
+		var body = cosmic_body.instantiate()
+		body.position = get_global_mouse_position()
+		add_child(body)
+	elif id == 2:
+		var body = star_body.instantiate()
+		body.position = get_global_mouse_position()
+		add_child(body)
+
 func _on_child_entered_tree(node: Node) -> void:
 	if node is Thermal_body:
 		thermal_bodies.append(node)
@@ -99,3 +129,11 @@ func _on_child_exiting_tree(node: Node) -> void:
 		thermal_bodies.erase(node)
 		if node is Star_body:
 			star_bodies.append(node)
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	target_body = body
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	target_body = null

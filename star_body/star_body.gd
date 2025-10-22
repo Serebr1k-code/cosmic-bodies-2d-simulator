@@ -22,3 +22,6 @@ func _process(delta: float) -> void:
 
 func _on_timer_timeout() -> void:
 	emissivity = 1.0
+
+func get_type():
+	return "Star"
