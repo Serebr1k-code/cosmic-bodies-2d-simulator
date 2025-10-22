@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://b3etj2l41jmul"]
 
 [ext_resource type="Script" uid="uid://dym6w0eihaa7f" path="res://main/main.gd" id="1_53q0u"]
-[ext_resource type="Script" path="res://main/camera.gd" id="2_pjrb6"]
+[ext_resource type="Script" uid="uid://dh31frshd2evy" path="res://main/camera.gd" id="2_pjrb6"]
 [ext_resource type="PackedScene" uid="uid://co6h86rthora7" path="res://star_body/star_body.tscn" id="3_xwkvk"]
 [ext_resource type="PackedScene" uid="uid://d36d0mpqeicbg" path="res://cosmic_body/cosmic body.tscn" id="4_c651c"]
 

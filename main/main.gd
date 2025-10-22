@@ -44,25 +44,34 @@ func handle_temperature(delta):
 	for body in thermal_bodies:
 		var total_energy_received = 0.0
 		
-		# Энергия от звезд
-		for star in star_bodies:
-			if body == star:
-				continue
+		for body2 in thermal_bodies:
+			if body == body2:
+					continue
+			if body2 is Star_body:
+				var star_distance = body2.global_position.distance_to(body.global_position)
+				if star_distance < 1.0:
+					continue
 				
-			var star_distance = star.global_position.distance_to(body.global_position)
-			if star_distance < 1.0:
-				continue
-			
-			# Inverse square law for radiation
-			var received_power = star.luminosity / (PI * star_distance * star_distance)
-			var absorbed_power = received_power * (1.0 - body.albedo) * delta
-			total_energy_received += absorbed_power
+				# Inverse square law for radiation
+				var received_power = body2.luminosity / (PI * star_distance * star_distance)
+				var absorbed_power = received_power * (1.0 - body.albedo) * delta
+				total_energy_received += absorbed_power
+			else:
+				var distance = max(body.position.distance_to(body2.position), 1.0)
+				
+				# Угловой коэффициент (упрощенно)
+				var area1 = PI * body.CollisionShape.shape.radius * body.CollisionShape.shape.radius
+				var area2 = PI * body2.CollisionShape.shape.radius * body2.CollisionShape.shape.radius
+				var view_factor = min(area1, area2) / (4.0 * PI * distance * distance)
+				
+				# Теплообмен
+				var received_power = STEFAN_BOLTZMANN * body.emissivity * body2.emissivity * area1 * view_factor * (pow(body.temperature, 4) - pow(body2.temperature, 4)) * delta
+				var absorbed_power = received_power * (1.0 - body.albedo) * delta
+				total_energy_received += absorbed_power
 		
 		var area = PI * body.CollisionShape.shape.radius * body.CollisionShape.shape.radius
-		
 		# Energy lost to space
 		var energy_lost = STEFAN_BOLTZMANN * body.emissivity * area * pow(body.temperature, 4) * delta
-		
 		# Net energy change
 		var net_energy = total_energy_received - energy_lost
 		
@@ -71,7 +80,6 @@ func handle_temperature(delta):
 		
 		# Update temperature
 		body.temperature += delta_temp
-		if delta_temp>0: print(delta_temp)
 		
 		# Prevent absolute zero and INF
 		body.temperature = max(2.7, body.temperature)
