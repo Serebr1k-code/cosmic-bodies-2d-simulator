@@ -2,7 +2,9 @@ extends Thermal_body
 
 class_name Star_body
 
-const life_time: float = 100000000000.0
+@onready var timer = $Timer
+
+const life_time: float = 1e11
 
 var luminosity: float = 3.827*10e13  # Power output
 var core_temperature: float = 5778.0  # Kelvin
@@ -34,7 +36,7 @@ func update_visual():
 	elif small_white_ball:
 		$Sprite2D.modulate = Color.WHITE
 	else:
-		$Sprite2D.modulate = Color(min(temperature/1000, 1.0), min(temperature/2000, 0.5), max(1-temperature/1000, 0.0))
+		$Sprite2D.modulate = Color(min(temperature/3000, 1.0), min(temperature/6000, 0.5), max(1-temperature/3000, 0.0))
 
 func resize(up: bool, n: float):
 	if up:

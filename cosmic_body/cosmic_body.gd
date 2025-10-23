@@ -26,7 +26,7 @@ func _process(delta: float) -> void:
 	pass
 
 func update_visual():
-	$Sprite2D.modulate = Color(min(temperature/1000, 1.0), min(temperature/2000, 0.5), max(1-temperature/1000, 0.0))
+	$Sprite2D.modulate = Color(min(temperature/5778, 1.0), min(temperature/5778/2, 0.5), max(1-temperature/1000, 0.0))
 
 func get_type():
 	return "Cosmic body"

@@ -44,6 +44,11 @@ layout_mode = 2
 text = "Type:"
 horizontal_alignment = 3
 
+[node name="Star_lifetime" type="Label" parent="Area2D/BodyInfo/VBoxContainer"]
+layout_mode = 2
+text = "Star lifetime:"
+horizontal_alignment = 3
+
 [node name="Camera" type="Camera2D" parent="."]
 script = ExtResource("2_pjrb6")
 

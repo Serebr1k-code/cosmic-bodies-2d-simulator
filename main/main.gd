@@ -10,7 +10,7 @@ extends Node2D
 @onready var Radius_label = $Area2D/BodyInfo/VBoxContainer/Radius
 @onready var Temperature_label = $Area2D/BodyInfo/VBoxContainer/Temperature
 @onready var Type_label = $Area2D/BodyInfo/VBoxContainer/Type
-
+@onready var Star_lifetime_label = $Area2D/BodyInfo/VBoxContainer/Star_lifetime
 
 #const
 const STEFAN_BOLTZMANN: float = 5.67e-8
@@ -99,7 +99,7 @@ func handle_temperature(delta):
 		
 		# Prevent absolute zero and INF
 		body.temperature = max(2.7, body.temperature)
-		body.temperature = min(body.temperature, 1e60)  # Максимальный предел
+		body.temperature = min(body.temperature, 1e30)  # Максимальный предел
 		
 		body.update_visual()
 
@@ -111,6 +111,11 @@ func handle_ui(delta):
 		Radius_label.text = "Radius: " + str(target_body.CollisionShape.shape.radius)
 		Temperature_label.text = "Temperature: " + str(target_body.temperature)
 		Type_label.text = "Type: " + str(target_body.get_type())
+		if target_body is Star_body:
+			Star_lifetime_label.show()
+			Star_lifetime_label.text =  "Star lifetime: " + str(target_body.timer.time_left)
+		else:
+			Star_lifetime_label.hide()
 	else:
 		$Area2D/BodyInfo.hide()
 
@@ -120,8 +125,8 @@ func handle_shatter(delta):
 			if (body.temperature < 500 or body.big_red_ball) and body.get_sprite_size() <= 6 and !body.small_white_ball:
 				body.mass *= 1.01
 				body.resize(true, 1.005)
-				body.luminosity *= 2
-				body.temperature *= 2
+				body.luminosity *= 1.5
+				body.temperature *= 1.5
 				body.big_red_ball = true
 			elif (body.big_red_ball or body.small_white_ball) and body.get_sprite_size() > 0.5:
 				body.small_white_ball = true
@@ -129,6 +134,8 @@ func handle_shatter(delta):
 				body.resize(false, 1.01)
 				body.luminosity /= 1.005
 				body.temperature /= 1.01
+			elif body.small_white_ball:
+				shatter_body(body, Vector2.ZERO, 10)
 				
 		elif body is Thermal_body:
 			if body.temperature > 10000:
@@ -188,9 +195,13 @@ func shatter_body(body: Thermal_body, point: Vector2, count: int):
 		
 		fragment.CollisionShape.shape = new_collision_shape
 		fragment.Sprite.scale = Vector2(fragment_scale/64, fragment_scale/64)
+		if body is Star_body:
+			fragment.Sprite.scale *= 1.158 / 2
 		
 		var direction = (fragment.global_position - body.global_position-point).normalized()
 		
-		fragment.apply_central_impulse(direction * 666)
+		fragment.apply_central_impulse(direction * 66600 / fragment.mass)
+		
+		
 	
 	body.queue_free()
