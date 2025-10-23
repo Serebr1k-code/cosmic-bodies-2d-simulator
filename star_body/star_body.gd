@@ -18,7 +18,7 @@ func _ready() -> void:
 	$Timer.start(mass/luminosity*life_time)
 
 func _process(delta: float) -> void:
-	$PointLight2D.energy = sqrt(temperature)/30
+	pass
 
 func _on_timer_timeout() -> void:
 	emissivity = 1.0

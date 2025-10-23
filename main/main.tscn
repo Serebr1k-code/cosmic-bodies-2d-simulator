@@ -1,9 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://b3etj2l41jmul"]
+[gd_scene load_steps=4 format=3 uid="uid://b3etj2l41jmul"]
 
 [ext_resource type="Script" uid="uid://dym6w0eihaa7f" path="res://main/main.gd" id="1_53q0u"]
 [ext_resource type="Script" uid="uid://dh31frshd2evy" path="res://main/camera.gd" id="2_pjrb6"]
-[ext_resource type="PackedScene" uid="uid://co6h86rthora7" path="res://star_body/star_body.tscn" id="3_c651c"]
-[ext_resource type="PackedScene" uid="uid://d36d0mpqeicbg" path="res://cosmic_body/cosmic body.tscn" id="4_3wy1v"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pjrb6"]
 radius = 1.0
@@ -11,58 +9,43 @@ radius = 1.0
 [node name="main" type="Node2D"]
 script = ExtResource("1_53q0u")
 
-[node name="Camera" type="Camera2D" parent="."]
-script = ExtResource("2_pjrb6")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="BodyInfo" type="PanelContainer" parent="CanvasLayer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -960.0
-offset_top = -540.0
-offset_right = -854.0
-offset_bottom = -436.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-metadata/_edit_use_anchors_ = true
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/BodyInfo"]
-layout_mode = 2
-
-[node name="Mass" type="Label" parent="CanvasLayer/BodyInfo/VBoxContainer"]
-layout_mode = 2
-text = "Mass:"
-horizontal_alignment = 3
-
-[node name="Radius" type="Label" parent="CanvasLayer/BodyInfo/VBoxContainer"]
-layout_mode = 2
-text = "Radius:"
-horizontal_alignment = 3
-
-[node name="Temperature" type="Label" parent="CanvasLayer/BodyInfo/VBoxContainer"]
-layout_mode = 2
-text = "Temperature:"
-horizontal_alignment = 3
-
-[node name="Type" type="Label" parent="CanvasLayer/BodyInfo/VBoxContainer"]
-layout_mode = 2
-text = "Type:"
-horizontal_alignment = 3
-
 [node name="Area2D" type="Area2D" parent="."]
+z_index = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_pjrb6")
 
-[node name="StarBody" parent="." instance=ExtResource("3_c651c")]
+[node name="BodyInfo" type="PanelContainer" parent="Area2D"]
+offset_right = 106.0
+offset_bottom = 104.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
-[node name="CosmicBody" parent="." instance=ExtResource("4_3wy1v")]
+[node name="VBoxContainer" type="VBoxContainer" parent="Area2D/BodyInfo"]
+layout_mode = 2
+
+[node name="Mass" type="Label" parent="Area2D/BodyInfo/VBoxContainer"]
+layout_mode = 2
+text = "Mass:"
+horizontal_alignment = 3
+
+[node name="Radius" type="Label" parent="Area2D/BodyInfo/VBoxContainer"]
+layout_mode = 2
+text = "Radius:"
+horizontal_alignment = 3
+
+[node name="Temperature" type="Label" parent="Area2D/BodyInfo/VBoxContainer"]
+layout_mode = 2
+text = "Temperature:"
+horizontal_alignment = 3
+
+[node name="Type" type="Label" parent="Area2D/BodyInfo/VBoxContainer"]
+layout_mode = 2
+text = "Type:"
+horizontal_alignment = 3
+
+[node name="Camera" type="Camera2D" parent="."]
+script = ExtResource("2_pjrb6")
 
 [connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
 [connection signal="child_exiting_tree" from="." to="." method="_on_child_exiting_tree"]

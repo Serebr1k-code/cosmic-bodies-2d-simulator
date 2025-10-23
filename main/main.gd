@@ -5,10 +5,10 @@ extends Node2D
 #onready
 @onready var cosmic_body = preload("res://cosmic_body/cosmic body.tscn")
 @onready var star_body = preload("res://star_body/star_body.tscn")
-@onready var Mass_label = $CanvasLayer/BodyInfo/VBoxContainer/Mass
-@onready var Radius_label = $CanvasLayer/BodyInfo/VBoxContainer/Radius
-@onready var Temperature_label = $CanvasLayer/BodyInfo/VBoxContainer/Temperature
-@onready var Type_label = $CanvasLayer/BodyInfo/VBoxContainer/Type
+@onready var Mass_label = $Area2D/BodyInfo/VBoxContainer/Mass
+@onready var Radius_label = $Area2D/BodyInfo/VBoxContainer/Radius
+@onready var Temperature_label = $Area2D/BodyInfo/VBoxContainer/Temperature
+@onready var Type_label = $Area2D/BodyInfo/VBoxContainer/Type
 
 
 #const
@@ -19,6 +19,7 @@ const G = 6.6743
 var thermal_bodies: Array[Thermal_body] = []
 var star_bodies: Array[Star_body] = []
 var target_body: Thermal_body
+var paused: bool = false
 
 func _ready() -> void:
 	pass
@@ -31,8 +32,10 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("mouse1"):
 		add_body(1)
-	if Input.is_action_just_pressed("mouse2"):
+		await get_tree().create_timer(0.05).timeout
+	elif Input.is_action_just_pressed("mouse2"):
 		add_body(2)
+		await get_tree().create_timer(0.05).timeout
 
 func handle_gravity(delta):
 	for child in get_children():
@@ -96,16 +99,15 @@ func handle_temperature(delta):
 		body.update_visual()
 
 func handle_ui(delta):
-	$CanvasLayer/BodyInfo.global_position = get_global_mouse_position() + Vector2(1000, 648)
 	$Area2D.global_position = get_global_mouse_position()
 	if target_body:
-		$CanvasLayer/BodyInfo.show()
+		$Area2D/BodyInfo.show()
 		Mass_label.text = "Mass: " + str(target_body.mass)
 		Radius_label.text = "Radius: " + str(target_body.CollisionShape.shape.radius)
 		Temperature_label.text = "Temperature: " + str(target_body.temperature)
 		Type_label.text = "Type: " + str(target_body.get_type())
 	else:
-		$CanvasLayer/BodyInfo.hide()
+		$Area2D/BodyInfo.hide()
 
 func add_body(id):
 	if id == 1:
