@@ -5,6 +5,7 @@ extends Node2D
 #onready
 @onready var cosmic_body = preload("res://cosmic_body/cosmic body.tscn")
 @onready var star_body = preload("res://star_body/star_body.tscn")
+
 @onready var Mass_label = $Area2D/BodyInfo/VBoxContainer/Mass
 @onready var Radius_label = $Area2D/BodyInfo/VBoxContainer/Radius
 @onready var Temperature_label = $Area2D/BodyInfo/VBoxContainer/Temperature
@@ -20,22 +21,26 @@ var thermal_bodies: Array[Thermal_body] = []
 var star_bodies: Array[Star_body] = []
 var target_body: Thermal_body
 var paused: bool = false
+var respawn_time: float = 0.0
 
 func _ready() -> void:
 	pass
 
 func _process(delta: float) -> void:
+	respawn_time -= delta
+	if respawn_time < 0: respawn_time = 0
 	handle_gravity(delta)
 	handle_temperature(delta)
 	handle_ui(delta)
+	handle_shatter(delta)
 
 func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed("mouse1"):
+	if Input.is_action_just_pressed("mouse1") and respawn_time == 0:
 		add_body(1)
-		await get_tree().create_timer(0.05).timeout
-	elif Input.is_action_just_pressed("mouse2"):
+		respawn_time = .05
+	elif Input.is_action_just_pressed("mouse2") and respawn_time == 0:
 		add_body(2)
-		await get_tree().create_timer(0.05).timeout
+		respawn_time = .05
 
 func handle_gravity(delta):
 	for child in get_children():
@@ -45,7 +50,7 @@ func handle_gravity(delta):
 				if dist != 0 and !are_bodies_touching(child, secondfuckingchild):
 					var power = child.mass*secondfuckingchild.mass/(dist**2)*G
 					child.apply_central_impulse((secondfuckingchild.position-child.position).normalized()*power)
-	
+
 func are_bodies_touching(body1: RigidBody2D, body2: RigidBody2D) -> bool:
 	var distance = body1.position.distance_to(body2.position)
 	var radius = 20.0 * body1.scale.x
@@ -109,6 +114,29 @@ func handle_ui(delta):
 	else:
 		$Area2D/BodyInfo.hide()
 
+func handle_shatter(delta):
+	for body in get_children():
+		if body is Star_body:
+			if (body.temperature < 500 or body.big_red_ball) and body.get_sprite_size() <= 6 and !body.small_white_ball:
+				body.mass *= 1.01
+				body.resize(true, 1.005)
+				body.luminosity *= 2
+				body.temperature *= 2
+				body.big_red_ball = true
+			elif (body.big_red_ball or body.small_white_ball) and body.get_sprite_size() > 0.5:
+				body.small_white_ball = true
+				body.big_red_ball = false
+				body.resize(false, 1.01)
+				body.luminosity /= 1.005
+				body.temperature /= 1.01
+				
+		elif body is Thermal_body:
+			if body.temperature > 10000:
+				if body.CollisionShape.shape.radius < 6:
+					body.queue_free()
+				else:
+					shatter_body(body, Vector2.ZERO, 2)
+
 func add_body(id):
 	if id == 1:
 		var body = cosmic_body.instantiate()
@@ -139,3 +167,30 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 
 func _on_area_2d_body_exited(body: Node2D) -> void:
 	target_body = null
+
+func shatter_body(body: Thermal_body, point: Vector2, count: int):
+	var original_volume = PI * (body.CollisionShape.shape.radius **2)
+	var fragment_volume = original_volume / count
+	
+	for i in range(count):
+		var fragment: Thermal_body = cosmic_body.instantiate()
+		if body is Star_body:
+			fragment = star_body.instantiate()
+		
+		var fragment_scale = sqrt(fragment_volume/PI)
+		var new_collision_shape = CircleShape2D.new()
+		new_collision_shape.radius = fragment_scale
+		
+		add_child(fragment)
+		
+		fragment.global_position = body.global_position + Vector2(randf_range(-body.CollisionShape.shape.radius/2, body.CollisionShape.shape.radius/2), randf_range(-body.CollisionShape.shape.radius/2, body.CollisionShape.shape.radius/2))
+		fragment.mass = body.mass / count
+		
+		fragment.CollisionShape.shape = new_collision_shape
+		fragment.Sprite.scale = Vector2(fragment_scale/64, fragment_scale/64)
+		
+		var direction = (fragment.global_position - body.global_position-point).normalized()
+		
+		fragment.apply_central_impulse(direction * 666)
+	
+	body.queue_free()

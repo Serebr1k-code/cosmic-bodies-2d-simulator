@@ -7,6 +7,7 @@ signal apply_impulse(vec)
 
 #onready
 @onready var CollisionShape = $CollisionShape2D
+@onready var Sprite = $Sprite2D
 
 #const
 
